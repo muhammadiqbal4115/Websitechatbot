@@ -83,6 +83,8 @@ def generate_reply(
     # 4. Call LLM
     llm = get_llm()
     response = llm.invoke(messages)
+    print(f"LLM RAW RESPONSE: {repr(response)}")
+    print(f"LLM CONTENT: {repr(response.content)}")
     return response.content.strip(), source_questions
 
 
