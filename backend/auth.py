@@ -11,15 +11,9 @@ import bcrypt
 
 load_dotenv()
 
-SECRET_KEY = os.getenv("SECRET_KEY")
+SECRET_KEY = os.getenv("SECRET_KEY", "fallback-secret-change-me")
 ALGORITHM = "HS256"
 ACCESS_TOKEN_EXPIRE_MINUTES = 60 * 8  # 8 hours
-
-# Single admin user (expand to DB in production)
-ADMIN_USERNAME = os.getenv("ADMIN_USERNAME", "admin")
-ADMIN_PASSWORD_HASH = os.getenv(
-    "ADMIN_PASSWORD_HASH"
-)
 
 bearer_scheme = HTTPBearer(auto_error=False)
 
@@ -30,14 +24,21 @@ def verify_password(plain: str, hashed: str) -> bool:
 
 
 def authenticate_admin(username: str, password: str) -> bool:
-    if username != ADMIN_USERNAME:
+    expected_user = os.getenv("ADMIN_USERNAME", "admin")
+    expected_hash = os.getenv("ADMIN_PASSWORD_HASH")
+
+    if not expected_hash:
         return False
-    return verify_password(password, ADMIN_PASSWORD_HASH)
+    if username != expected_user:
+        return False
+    return verify_password(password, expected_hash)
 
 
 def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -> str:
     to_encode = data.copy()
-    expire = datetime.utcnow() + (expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES))
+    expire = datetime.utcnow() + (
+        expires_delta or timedelta(minutes=ACCESS_TOKEN_EXPIRE_MINUTES)
+    )
     to_encode.update({"exp": expire})
     return jwt.encode(to_encode, SECRET_KEY, algorithm=ALGORITHM)
 
@@ -45,16 +46,26 @@ def create_access_token(data: dict, expires_delta: Optional[timedelta] = None) -
 def get_current_admin(
     credentials: Optional[HTTPAuthorizationCredentials] = Depends(bearer_scheme),
 ):
+    admin_username = os.getenv("ADMIN_USERNAME", "admin")
+
     if not credentials:
         raise HTTPException(
             status_code=status.HTTP_401_UNAUTHORIZED,
             detail="Not authenticated",
         )
     try:
-        payload = jwt.decode(credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM])
+        payload = jwt.decode(
+            credentials.credentials, SECRET_KEY, algorithms=[ALGORITHM]
+        )
         username: str = payload.get("sub")
-        if username != ADMIN_USERNAME:
-            raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        if username != admin_username:
+            raise HTTPException(
+                status_code=status.HTTP_401_UNAUTHORIZED,
+                detail="Invalid token",
+            )
         return username
     except JWTError:
-        raise HTTPException(status_code=status.HTTP_401_UNAUTHORIZED, detail="Invalid token")
+        raise HTTPException(
+            status_code=status.HTTP_401_UNAUTHORIZED,
+            detail="Invalid token",
+        )
