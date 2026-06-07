@@ -9,7 +9,7 @@
 
   // ── Configuration (defaults, overridden by /api/config) ────────
   const CONFIG = {
-    apiUrl: "https://websitechatbot-production-1f38.up.railway.app",
+    apiUrl: "https://websitechatbot-production-0f7c.up.railway.app",
     companyName: "MAAN AI",
     welcomeMessage: "👋 Hi there! I'm your AI support assistant. How can I help you today?",
     suggestions: [
