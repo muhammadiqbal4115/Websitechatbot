@@ -26,12 +26,7 @@ app = FastAPI(
 app.add_middleware(
     CORSMiddleware,
     allow_origins=[
-        "https://stitchspheretextile.com",
-        "https://www.stitchspheretextile.com",
-        "https://maanai.streamlit.app",
-        "https://www.maanai.streamlit.app",
-        "https://websitechatbot-production-0f7c.up.railway.app",
-        "https://websitechatbot-production-1f38.up.railway.app",
+        allow_origins=["*"],
     ],
     allow_credentials=True,
     allow_methods=["*"],
