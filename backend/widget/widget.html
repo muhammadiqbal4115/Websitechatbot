@@ -1,0 +1,43 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Chat Widget Demo</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    body { margin: 0; background: #0a0a10; font-family: 'DM Sans', sans-serif; }
+    .demo-page {
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      color: #e8e8f0;
+      text-align: center;
+      gap: 16px;
+    }
+    .demo-page h1 { font-size: 2rem; font-weight: 600; }
+    .demo-page p  { color: #6b6b80; max-width: 400px; }
+    .badge-tier {
+      display: inline-block;
+      padding: 4px 14px;
+      border-radius: 20px;
+      background: rgba(108,99,255,0.15);
+      border: 1px solid rgba(108,99,255,0.4);
+      color: #8B84FF;
+      font-size: 13px;
+      margin-bottom: 8px;
+    }
+  </style>
+</head>
+<body>
+  <div class="demo-page">
+    <span class="badge-tier">Basic Plan · $50</span>
+    <h1>AI Customer Support</h1>
+    <p>Click the chat button in the bottom-right corner to start a conversation with the AI assistant.</p>
+  </div>
+
+  <script src="chatbot.js"></script>
+</body>
+</html>
